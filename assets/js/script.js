@@ -1,8 +1,9 @@
 var apiKey = '&appid=8710c92cc91b2be9b69b111ac287d778';
 var currWeather = 'https://api.openweathermap.org/data/2.5/weather?q=';
-var citySearch = $("#city");
-var Search = $("#searchButton");
+var citySearch = $('#city');
+var Search = $('#searchButton');
 var curDate = moment().format('l');
+var histList = $('#searchHist')
 var lat;
 var lon;
 
@@ -77,6 +78,29 @@ function getWeatherForecast () {
     })
 };
 
+function searchHistory(){
+    var cityName = citySearch.val();
+    console.log(cityName);
+    console.log(citySearch);
+    // Assign style to the button
+    var histLink = $('<button>');
+     histLink.val(cityName);
+     histLink.text(cityName);
+     console.log(histLink.val());
+     console.log(histLink);
+    histLink.addClass('search-history');
+    histList.append(histLink);
+};
 
-
-Search.on('click',getCurWeather);
+//couldn't get button to respond when clicked on, cannot access history from list
+$('searchHist').on('click', '.search-history', function (event){
+    
+    // citySearch.val($(event.target).val());
+    // console.log(citySearch);
+    console.log('hello');
+}
+);
+Search.on('click',function(){
+getCurWeather();
+searchHistory();
+})
