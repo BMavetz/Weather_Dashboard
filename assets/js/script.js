@@ -7,7 +7,8 @@ var lat;
 var lon;
 console.log(curDate);
 $(".futWeath").width('19%');
-console.log('\u00B0F');
+var printA = $('#weatherForecast').children().eq(1).children().eq(0).children().eq(1).children('#snappy');
+console.log(printA.text());
 //get weather
     //use current weather api to return weather data
     //execute weather data based on city name from input section
@@ -52,17 +53,22 @@ function getWeatherForecast () {
     })
     .then(function (data) {
       console.log(data);
-      weatherImg.attr('src', 'http://openweathermap.org/img/wn/10d@2x.png' );
+      
+      var iconCode = data.current.weather[0].icon;
+      weatherImg.attr('src', 'http://openweathermap.org/img/wn/' + iconCode +'@2x.png');
       $('#cityInfo').append(weatherImg);
-        // var curWeathIcon = data.current.weather[0].icon;
-        // $('#cityInfo').attr
         $('#curTemp').text('Temp: ' + data.current.temp + ' \u00B0F');
         $('#curWind').text('Wind: ' + data.current.wind_speed + ' MPH');
         $('#curHumidity').text('Humidity: ' + data.current.humidity + ' %');
         $('#curUVI').text('UV Index: ' + data.current.uvi);
 
-
-
+        for(var i = 0; i < 5 ; i++){
+            iconCode = data.daily[i].weather[0].icon;
+        $('#weatherForecast').children().eq(i).children().eq(0).children().eq(1).children('img').attr('src', 'http://openweathermap.org/img/wn/' + iconCode +'@2x.png');
+        $('#weatherForecast').children().eq(i).children().eq(0).children().eq(1).children('#futTemp').text('Temp: ' + data.daily[i].temp.day + ' \u00B0F');
+        $('#weatherForecast').children().eq(i).children().eq(0).children().eq(1).children('#futWind').text('Wind: ' + data.daily[i].wind_speed + ' MPH');
+        $('#weatherForecast').children().eq(i).children().eq(0).children().eq(1).children('#futHumidity').text('Humidity: ' + data.daily[i].wind_speed + ' %');
+        }
     })
 };
 
