@@ -1,27 +1,18 @@
 var apiKey = '&appid=8710c92cc91b2be9b69b111ac287d778';
 var currWeather = 'https://api.openweathermap.org/data/2.5/weather?q=';
-var citySearch = $('#city');
+var city = $('#city');
 var Search = $('#searchButton');
 var curDate = moment().format('l');
 var histList = $('#searchHist')
+var citySearch;
 var lat;
 var lon;
 
 $(".futWeath").width('19%');
 
-//get weather
-    //use current weather api to return weather data
-    //execute weather data based on city name from input section
-    //log weather data in current weather box
-    //store lat and long values
-//get future weather
-    //call lat and lon values to get weather forecast
-    //display 'hide' for forecast boxes until search is executed
-    //take .child parameter of forecast section of code, and assign the future weather data
-//save cities in local storage, generate list of previous searches below search form on page
-    //assign link value, can click on link
-    //link generates function that uses value associated with link to input into the url to pull up the weather data (reference hw activity from unit 5 with keyboard for logic)
+
 function getCurWeather () {
+    
     $('#cityInfo').text(citySearch.val() + ' (' + curDate + ')');
     for(var i = 0; i < 5 ; i++){
         var dayIndex = i+1;
@@ -35,11 +26,10 @@ function getCurWeather () {
       return response.json();
     })
     .then(function (data) {
-      console.log(data);
+      
       lat = data.coord.lat;
       lon = data.coord.lon;
-    //   console.log(currWeather + lon);
-    //   console.log(data.coord.lat);
+   
     getWeatherForecast();
     })  
 };
@@ -52,8 +42,7 @@ function getWeatherForecast () {
       return response.json();
     })
     .then(function (data) {
-      console.log(data);
-      
+            
       var iconCode = data.current.weather[0].icon;
       weatherImg.attr('src', 'http://openweathermap.org/img/wn/' + iconCode +'@2x.png');
       $('#cityInfo').append(weatherImg);
@@ -80,27 +69,22 @@ function getWeatherForecast () {
 
 function searchHistory(){
     var cityName = citySearch.val();
-    console.log(cityName);
-    console.log(citySearch);
-    // Assign style to the button
     var histLink = $('<button>');
      histLink.val(cityName);
      histLink.text(cityName);
-     console.log(histLink.val());
-     console.log(histLink);
     histLink.addClass('search-history');
     histList.append(histLink);
 };
 
-//couldn't get button to respond when clicked on, cannot access history from list
-$('searchHist').on('click', '.search-history', function (event){
+
+$('#searchHist').on('click', '.search-history', function (event){
     
-    // citySearch.val($(event.target).val());
-    // console.log(citySearch);
-    console.log('hello');
+    citySearch.val($(event.target).val());
+    getCurWeather();
 }
 );
 Search.on('click',function(){
+citySearch = city;
 getCurWeather();
 searchHistory();
 })

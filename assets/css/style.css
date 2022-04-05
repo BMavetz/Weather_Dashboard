@@ -12,3 +12,15 @@ header{
 .currWeather {
     border: solid;
 }
+
+.fiveDay {
+    font-size: 150%;
+}
+
+#futWeath , #futWind , #futHumidity {
+    font-size: 80%;
+}
+
+.futWeath div h3 {
+    font-size: 130%;
+}
