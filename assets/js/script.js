@@ -5,10 +5,9 @@ var Search = $("#searchButton");
 var curDate = moment().format('l');
 var lat;
 var lon;
-console.log(curDate);
+
 $(".futWeath").width('19%');
-var printA = $('#weatherForecast').children().eq(1).children().eq(0).children().eq(1).children('#snappy');
-console.log(printA.text());
+
 //get weather
     //use current weather api to return weather data
     //execute weather data based on city name from input section
@@ -61,7 +60,13 @@ function getWeatherForecast () {
         $('#curWind').text('Wind: ' + data.current.wind_speed + ' MPH');
         $('#curHumidity').text('Humidity: ' + data.current.humidity + ' %');
         $('#curUVI').text('UV Index: ' + data.current.uvi);
-
+        if (data.current.uvi < 3) {
+            $('#curUVI').css('background-color', 'green');        
+        }else if (data.current.uvi > 5) {
+            $('#curUVI').css('background-color', 'red');
+        }else{
+            $('#curUVI').css('background-color', 'yellow');
+        }
         for(var i = 0; i < 5 ; i++){
             iconCode = data.daily[i].weather[0].icon;
         $('#weatherForecast').children().eq(i).children().eq(0).children().eq(1).children('img').attr('src', 'http://openweathermap.org/img/wn/' + iconCode +'@2x.png');
@@ -71,5 +76,7 @@ function getWeatherForecast () {
         }
     })
 };
+
+
 
 Search.on('click',getCurWeather);
