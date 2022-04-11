@@ -1,8 +1,10 @@
 Weather Dashboard
 
-This webpage allows for the user to search a city by name, and returns the weather for that city.  The data returned includes current weather, and weather forecast for the next 5 days.  The site uses a third-party API to access weather data by location.  The site also saves searches and should allow the user to click on a previous search term to pull up the weather for that location(*note: Local storage has not been updated to save search history upon refreshing page)
+This webpage allows for the user to search a city by name, and returns the weather for that city.  The data returned includes current weather, and weather forecast for the next 5 days.  The site uses a third-party API to access weather data by location.  The site also saves searches, creating a history list of previous searches that utilizes local storage to allow for the history to regenerate every time the webpage is loaded.  The history list is comprised of link elements that allow the user to click on the city name, which in return will load the weather data for that city.  
 
-The site should follow the following conditions:
+The site has features built in to account for a user trying to search for nothing (i.e. blank city input), as well as for a user typing in an incorrect city spelling or a city name that does not exist.  
+
+The site follows the following conditions:
 GIVEN a weather dashboard with form inputs
 WHEN I search for a city
 THEN I am presented with current and future conditions for that city and that city is added to the search history
