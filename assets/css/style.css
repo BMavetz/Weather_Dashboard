@@ -24,3 +24,10 @@ header{
 .futWeath div h3 {
     font-size: 130%;
 }
+#searchHist a {
+    display:block;
+}
+
+#city {
+    width: 100%;
+}

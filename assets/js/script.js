@@ -1,36 +1,42 @@
 var apiKey = '&appid=8710c92cc91b2be9b69b111ac287d778';
 var currWeather = 'https://api.openweathermap.org/data/2.5/weather?q=';
-var city = $('#city');
+var citySearch;
 var Search = $('#searchButton');
 var curDate = moment().format('l');
-var histList = $('#searchHist')
-var citySearch;
+var histList = $('#searchHist');
+var favList = [];
+var clear = $('#clearHist');
 var lat;
 var lon;
 
 $(".futWeath").width('19%');
-
+getHistory();
 
 function getCurWeather () {
-    
-    $('#cityInfo').text(citySearch.val() + ' (' + curDate + ')');
-    for(var i = 0; i < 5 ; i++){
-        var dayIndex = i+1;
-        var futureDate = moment().add(dayIndex, 'days').format('l');
-        $('#weatherForecast').children().eq(i).children().eq(0).children('h3').text(futureDate);
-        }
+    $('#city').val('');
     // console.log(citySearch.val());
-    var requestURL = (currWeather + citySearch.val() + apiKey + '&units=imperial');
+    var requestURL = (currWeather + citySearch + apiKey + '&units=imperial');
     fetch(requestURL)
     .then(function (response) {
-      return response.json();
+        return response.json();
     })
     .then(function (data) {
-      
-      lat = data.coord.lat;
-      lon = data.coord.lon;
-   
-    getWeatherForecast();
+        if(data.cod == '404'){
+            $('#cityInfo').text('City name not recognized.  Please enter a valid city name into the input');
+            clearAll();   
+        }
+        else{
+          $('#cityInfo').text(citySearch + ' (' + curDate + ')');
+          for(var i = 0; i < 5 ; i++){
+              var dayIndex = i+1;
+              var futureDate = moment().add(dayIndex, 'days').format('l');
+              $('#weatherForecast').children().eq(i).children().eq(0).children('h3').text(futureDate);
+              }
+        lat = data.coord.lat;
+        lon = data.coord.lon;
+        toLocalStorage();
+        getWeatherForecast();
+      }
     })  
 };
 
@@ -67,24 +73,70 @@ function getWeatherForecast () {
     })
 };
 
-function searchHistory(){
-    var cityName = citySearch.val();
-    var histLink = $('<button>');
-     histLink.val(cityName);
-     histLink.text(cityName);
-    histLink.addClass('search-history');
+//possibly add a cutoff of 10 items using if statement
+function toLocalStorage(){
+    if(!favList.includes(citySearch)){
+        favList.push(citySearch);
+        console.log(favList);
+        localStorage.setItem("cityFavorites", JSON.stringify(favList));
+        renderHistory();
+    }
+}
+
+function getHistory(){
+    var favs = JSON.parse(localStorage.getItem("cityFavorites"));
+    if (favs !== null){
+        favList = favs
+    }
+    renderHistory();
+}
+
+function renderHistory(){
+    histList.children('a').remove();
+    histList.innerHTML = "";
+    for(var i = 0; i < favList.length; i++){
+    var favContent =favList[i];
+    var histLink = $('<a>');
+    histLink.attr('href','');
+    histLink.attr('city-history', favContent);
+     histLink.text(favContent);
+    // histLink.addClass('search-history');
     histList.append(histLink);
+    }
 };
 
+function clearAll() {
+    $('.currWeather').children('p').text('');
+    for(var i = 0; i < 5 ; i++){
+    $('#weatherForecast').children().eq(i).children().eq(0).children('h3').text('');
+    $('#weatherForecast').children().eq(i).children().eq(0).children().eq(1).children('img').attr('src','');
+    $('#weatherForecast').children().eq(i).children().eq(0).children().eq(1).children('#futTemp').text('');
+    $('#weatherForecast').children().eq(i).children().eq(0).children().eq(1).children('#futWind').text('');
+    $('#weatherForecast').children().eq(i).children().eq(0).children().eq(1).children('#futHumidity').text('');
+    }
+}
 
-$('#searchHist').on('click', '.search-history', function (event){
-    
-    citySearch.val($(event.target).val());
+
+histList.on('click', function (event){
+    event.preventDefault();
+    var element = $(event.target);
+    citySearch = element.attr('city-history');
+    getCurWeather();
+});
+
+clear.on('click', function(event){
+    event.preventDefault();
+    favList = [];
+    localStorage.setItem("cityFavorites", JSON.stringify(favList));
+    renderHistory();
+});
+
+Search.on('click',function(){
+citySearch = $('#city').val();
+if(citySearch == ''){
+    $('#cityInfo').text('Please enter a city into the search bar');
+    clearAll();
+}else{
     getCurWeather();
 }
-);
-Search.on('click',function(){
-citySearch = city;
-getCurWeather();
-searchHistory();
-})
+});
